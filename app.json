@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "check",
-    "slug": "check",
+    "name": "Репы",
+    "slug": "turnips",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/repa.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/cover.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,7 +21,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/repa.png",
         "backgroundColor": "#FFFFFF"
       }
     },
