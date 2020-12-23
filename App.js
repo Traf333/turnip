@@ -44,10 +44,10 @@ export default function App() {
 
             if (route.name === 'Home') {
               iconName = focused
-                ? 'ios-information-circle'
-                : 'ios-information-circle-outline'
+                ? 'reader-outline'
+                : 'newspaper-outline'
             } else if (route.name === 'Settings') {
-              iconName = focused ? 'ios-list-box' : 'ios-list'
+              iconName = focused ? 'options-outline' : 'ios-list'
             }
 
             // You can return any component that you like here!

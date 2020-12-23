@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "Pet project for acting lessons",
+    "githubUrl": "https://github.com/traf333/turnip"
   }
 }

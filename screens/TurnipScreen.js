@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from 'react'
-import { FlatList, SafeAreaView, Vibration, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Modal,
+  TouchableHighlight,
+  Alert,
+  TouchableOpacity,
+  ScrollView
+} from 'react-native'
 
-const fetchPlay = async (id) => {
-  const res = await fetch(`https://turnipapp-api.herokuapp.com/play/${id}.json`)
-  return res.json()
-}
+import TurnipItem from '../components/TurnipItem'
+import { fetchPlay } from '../lib/api'
 
-const Item = ({ id, text, onPress }) => (
-  <View style={styles.item}>
-    <TouchableOpacity onPress={onPress}>
-      <Text style={styles.text}>{text}</Text>
-    </TouchableOpacity>
-  </View>
-)
 
 const TurnipScreen = ({ route }) => {
-
   const [play, setPlay] = useState()
+  const [selectedSpeech, setSelectedSpeech] = useState(null)
 
   useEffect(() => {
     fetchPlay(route.params.id).then(data => setPlay(data))
   }, [])
 
-  const handlePress = (item) => {
-    console.log(item)
-    Vibration.vibrate(60)
-  }
-  const renderItem = ({ item }) => <Item text={item.text} onPress={() => handlePress(item)} />
+
+  const renderItem = ({ item }) => <TurnipItem {...item} onSelectSpeech={() => setSelectedSpeech(item.id)} />
 
   if (!play) {
     return (
@@ -38,7 +38,40 @@ const TurnipScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
 
-      <FlatList data={play.speeches} renderItem={renderItem} keyExtractor={item => item.id.toString()} />
+      <FlatList
+        data={play.speeches}
+        keyExtractor={item => item.id.toString()}
+        renderItem={renderItem}
+      />
+      <Modal
+        transparent={true}
+        visible={selectedSpeech > 0}
+        onRequestClose={() => console.log('on request console.log()')}
+        onDismiss={() => console.log('on dismiss')}
+      >
+        <TouchableOpacity
+          style={styles.container}
+          activeOpacity={1}
+          onPressOut={() => setSelectedSpeech(null)}
+        >
+          <ScrollView
+            directionalLockEnabled={true}
+            contentContainerStyle={styles.scrollModal}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Hello World!</Text>
+
+                <TouchableHighlight
+                  style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
+                  onPress={() => setSelectedSpeech(null)}>
+                  <Text style={styles.textStyle}>Hide Modal</Text>
+                </TouchableHighlight>
+              </View>
+            </View>
+          </ScrollView>
+        </TouchableOpacity>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -51,11 +84,43 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
   },
-  item: {
-    padding: 5,
-    marginVertical: 10,
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
   },
-  text: {
-    fontSize: 14,
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
+  openButton: {
+    backgroundColor: '#F194FF',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  scrollModal: {
+    flex: 1
+  }
 })
