@@ -6,25 +6,42 @@ import {
   Text,
   View,
   FlatList,
-  Modal,
   TouchableHighlight,
-  Alert,
-  TouchableOpacity,
-  ScrollView
 } from 'react-native'
 
 import TurnipItem from '../components/TurnipItem'
-import { fetchPlay } from '../lib/api'
+import { deleteSpeech, fetchPlay } from '../lib/api'
+import Modal from '../components/Modal'
+import { Ionicons } from '@expo/vector-icons'
 
 
-const TurnipScreen = ({ route }) => {
+const TurnipScreen = ({ route, navigation }) => {
   const [play, setPlay] = useState()
+  const [playSpeeches, setPlaySpeeches] = useState([])
   const [selectedSpeech, setSelectedSpeech] = useState(null)
 
   useEffect(() => {
-    fetchPlay(route.params.id).then(data => setPlay(data))
+    fetchPlay(route.params.id).then(({ speeches, ...rest }) => {
+      setPlay(rest)
+      setPlaySpeeches(speeches)
+    })
   }, [])
 
+  const handleOnDelete = async () => {
+    try {
+      await deleteSpeech(selectedSpeech)
+      setPlaySpeeches(playSpeeches.filter(s => s.id !== selectedSpeech))
+      setSelectedSpeech(null)
+    } catch (e) {
+      console.log(e)
+      console.log('something went wrong with deletion')
+    }
+
+  }
+  const handleEdit = () => {
+    navigation.navigate('EditSpeechScreen', playSpeeches.find(i => i.id === selectedSpeech))
+    setSelectedSpeech(null)
+  }
 
   const renderItem = ({ item }) => <TurnipItem {...item} onSelectSpeech={() => setSelectedSpeech(item.id)} />
 
@@ -39,39 +56,34 @@ const TurnipScreen = ({ route }) => {
     <SafeAreaView style={styles.container}>
 
       <FlatList
-        data={play.speeches}
+        data={playSpeeches}
         keyExtractor={item => item.id.toString()}
         renderItem={renderItem}
       />
+      {selectedSpeech &&
       <Modal
-        transparent={true}
-        visible={selectedSpeech > 0}
+        visible
         onRequestClose={() => console.log('on request console.log()')}
         onDismiss={() => console.log('on dismiss')}
+        onPressOut={() => setSelectedSpeech(null)}
+        transparent
       >
-        <TouchableOpacity
-          style={styles.container}
-          activeOpacity={1}
-          onPressOut={() => setSelectedSpeech(null)}
-        >
-          <ScrollView
-            directionalLockEnabled={true}
-            contentContainerStyle={styles.scrollModal}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>Hello World!</Text>
-
-                <TouchableHighlight
-                  style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
-                  onPress={() => setSelectedSpeech(null)}>
-                  <Text style={styles.textStyle}>Hide Modal</Text>
-                </TouchableHighlight>
-              </View>
+        <View>
+          <TouchableHighlight onPress={handleEdit} underlayColor={'#ddd'}>
+            <View style={styles.actionItem}>
+              <Ionicons name='pencil-sharp' size={26} />
+              <Text style={styles.actionText}>Редактировать</Text>
             </View>
-          </ScrollView>
-        </TouchableOpacity>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={handleOnDelete} underlayColor={'#ddd'}>
+            <View style={styles.actionItem}>
+              <Ionicons name='trash-outline' size={26} />
+              <Text style={styles.actionText}>Удалить</Text>
+            </View>
+          </TouchableHighlight>
+        </View>
       </Modal>
+      }
     </SafeAreaView>
   )
 }
@@ -84,43 +96,15 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
+  actionItem: {
+    width: 200,
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  openButton: {
-    backgroundColor: '#F194FF',
-    borderRadius: 20,
     padding: 10,
-    elevation: 2,
   },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+  actionText: {
+    fontSize: 16,
+    paddingLeft: 20,
   },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  scrollModal: {
-    flex: 1
-  }
+
 })

@@ -1,11 +1,12 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Text, View, TouchableOpacity } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Ionicons } from '@expo/vector-icons'
 import HomeScreen from './screens/HomeScreen'
 import TurnipScreen from './screens/TurnipScreen'
+import EditSpeechScreen from './screens/EditSpeechScreen'
 
 
 function SettingsScreen() {
@@ -26,6 +27,14 @@ function HomeStackScreen() {
         name="TurnipScreen"
         component={TurnipScreen}
         options={({ route }) => ({ title: route.params.title })}
+      />
+      <HomeStack.Screen
+        name="EditSpeechScreen"
+        component={EditSpeechScreen}
+        options={{
+          title: 'Редактирование речи',
+        }}
+
       />
     </HomeStack.Navigator>
   )
