@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity } from 'react-native'
+import { fetchTurnips } from '../lib/api'
 
-const fetchTurnips = async () => {
-  const res = await fetch('https://turnipapp-api.herokuapp.com/play.json')
-  return res.json()
-}
 const Item = ({ title, onPress }) => (
   <View style={[styles.item, styles.shadow]}>
     <TouchableOpacity onPress={onPress}>
@@ -20,7 +17,7 @@ export default function App({ navigation }) {
     fetchTurnips().then(data => setTurnips(data))
   }, [])
   const renderItem = ({ item }) => <Item title={item.title}
-                                         onPress={() => navigation.navigate('TurnipScreen', item )} />
+                                         onPress={() => navigation.navigate('TurnipScreen', item)} />
 
   return (
     <SafeAreaView style={styles.container}>

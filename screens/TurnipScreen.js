@@ -8,29 +8,25 @@ import {
   FlatList,
   TouchableHighlight,
 } from 'react-native'
-
 import TurnipItem from '../components/TurnipItem'
-import { deleteSpeech, fetchPlay } from '../lib/api'
+import { deleteSpeech, fetchSpeeches } from '../lib/api'
 import Modal from '../components/Modal'
 import { Ionicons } from '@expo/vector-icons'
 
 
 const TurnipScreen = ({ route, navigation }) => {
-  const [play, setPlay] = useState()
-  const [playSpeeches, setPlaySpeeches] = useState([])
+  const [speeches, setSpeeches] = useState()
   const [selectedSpeech, setSelectedSpeech] = useState(null)
+  const { id } = route.params
 
   useEffect(() => {
-    fetchPlay(route.params.id).then(({ speeches, ...rest }) => {
-      setPlay(rest)
-      setPlaySpeeches(speeches)
-    })
+    fetchSpeeches(id).then(data => setSpeeches(data))
   }, [])
 
   const handleOnDelete = async () => {
     try {
       await deleteSpeech(selectedSpeech)
-      setPlaySpeeches(playSpeeches.filter(s => s.id !== selectedSpeech))
+      setSpeeches(speeches.filter(s => s.id !== selectedSpeech))
       setSelectedSpeech(null)
     } catch (e) {
       console.log(e)
@@ -39,13 +35,13 @@ const TurnipScreen = ({ route, navigation }) => {
 
   }
   const handleEdit = () => {
-    navigation.navigate('EditSpeechScreen', playSpeeches.find(i => i.id === selectedSpeech))
+    navigation.navigate('EditSpeechScreen', speeches.find(i => i.id === selectedSpeech))
     setSelectedSpeech(null)
   }
 
   const renderItem = ({ item }) => <TurnipItem {...item} onSelectSpeech={() => setSelectedSpeech(item.id)} />
 
-  if (!play) {
+  if (!speeches) {
     return (
       <View style={styles.container}>
         <Text>Loading</Text>
@@ -56,8 +52,8 @@ const TurnipScreen = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
 
       <FlatList
-        data={playSpeeches}
-        keyExtractor={item => item.id.toString()}
+        data={speeches}
+        keyExtractor={item => item._id}
         renderItem={renderItem}
       />
       {selectedSpeech &&
