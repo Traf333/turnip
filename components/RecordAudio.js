@@ -32,11 +32,6 @@ const RecordAudio = ({ onRecord }) => {
     setRecording(undefined)
     await recording.stopAndUnloadAsync()
     const uri = recording.getURI()
-    try {
-      await putAudio(id, uri)
-    } catch (e) {
-      console.log('Not posted audio')
-    }
     onRecord(uri)
   }
 

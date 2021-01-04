@@ -2,20 +2,33 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, TouchableHighlight, Vibration, View } from 'react-native'
 import { Audio } from 'expo-av'
 import RecordAudio from './RecordAudio'
+import { downloadAudio, uploadAudio } from '../lib/fileStorage'
+import * as SpeechRepository from '../repositories/SpeechRepository'
 
 const TurnipItem = (props) => {
-  const { id, text, audio_url, onSelectSpeech } = props
-  const [url, setUrl] = useState(audio_url)
+  const { _id, text, audio_url, onSelectSpeech, audio_uri } = props
+  const [uri, setUri] = useState(audio_uri)
   const [sound, setSound] = useState()
 
-  const handlePress = () => {
-    console.log(props, 'props')
-    if (url) {
-      playSound(url).then(() => console.log('paaaaayinng....!!!!'))
-    } else {
-      console.log('just tap', id, text)
-
+  const handlePress = async () => {
+    try {
+      if (uri) return await playSound(uri)
+      if (audio_url) {
+        const response = await downloadAudio(audio_url, _id)
+        await SpeechRepository.update(_id, { audio_uri: response.uri })
+        setUri(response.uri)
+        return await playSound(response.uri)
+      }
+    } catch (e) {
+      console.log('something went wrong with playing')
+      console.error(e)
     }
+  }
+
+  const handleRecord = async (uri) => {
+    await SpeechRepository.update(_id, { audio_uri: uri })
+    await uploadAudio(_id, uri)
+    setUri(uri)
   }
 
   const handleSelect = () => {
@@ -24,14 +37,9 @@ const TurnipItem = (props) => {
   }
 
   async function playSound(uri) {
-    console.log('Loading Sound')
-
     const { sound } = await Audio.Sound.createAsync({ uri })
     setSound(sound)
-
-    console.log('Playing Sound')
     await sound.playAsync()
-
   }
 
   useEffect(() => {
@@ -44,7 +52,7 @@ const TurnipItem = (props) => {
   }, [sound])
 
   return (
-    <View style={[styles.item, url ? styles.recordedBg : styles.emptyBg]}>
+    <View style={[styles.item, uri || audio_url ? styles.recordedBg : styles.emptyBg]}>
       <TouchableHighlight
         onLongPress={handleSelect}
         onPress={handlePress}
@@ -56,7 +64,7 @@ const TurnipItem = (props) => {
       >
         <Text style={styles.text}>{text}</Text>
       </TouchableHighlight>
-      <RecordAudio onRecord={setUrl} />
+      <RecordAudio onRecord={handleRecord} />
     </View>
   )
 }

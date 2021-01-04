@@ -38,6 +38,7 @@ export const addNew = async (params) => {
   }
 }
 
+
 export const exists = async (id) => {
   try {
     await playsDB.get(id)

@@ -1,10 +1,10 @@
-import { speechesDB } from '../lib/database'
+import { playsDB, speechesDB } from '../lib/database'
 
 const modelName = 'speech'
 
 export const find = async (id) => {
   try {
-    return await speechesDB.get(`${modelName}-${id}`)
+    return await speechesDB.get(id)
   } catch (e) {
     console.log(e)
   }
@@ -26,6 +26,15 @@ export const bulkCreate = async (params) => {
     await speechesDB.bulkDocs(params)
   } catch (err) {
     console.log(err)
+  }
+}
+
+export const update = async (id, params) => {
+  try {
+    const record = await find(id)
+    return await speechesDB.put({ ...record, ...params })
+  } catch (err) {
+    console.error(err)
   }
 }
 
