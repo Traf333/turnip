@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Ionicons } from '@expo/vector-icons'
 import {
   SafeAreaView,
   StatusBar,
@@ -11,7 +12,6 @@ import {
 import TurnipItem from '../components/TurnipItem'
 import { deleteSpeech, fetchSpeeches } from '../lib/api'
 import Modal from '../components/Modal'
-import { Ionicons } from '@expo/vector-icons'
 
 
 const TurnipScreen = ({ route, navigation }) => {
@@ -26,7 +26,7 @@ const TurnipScreen = ({ route, navigation }) => {
   const handleOnDelete = async () => {
     try {
       await deleteSpeech(selectedSpeech)
-      setSpeeches(speeches.filter(s => s.id !== selectedSpeech))
+      setSpeeches(speeches.filter(s => s._id !== selectedSpeech))
       setSelectedSpeech(null)
     } catch (e) {
       console.log(e)
@@ -35,11 +35,11 @@ const TurnipScreen = ({ route, navigation }) => {
 
   }
   const handleEdit = () => {
-    navigation.navigate('EditSpeechScreen', speeches.find(i => i.id === selectedSpeech))
+    navigation.navigate('EditSpeechScreen', speeches.find(i => i._id === selectedSpeech))
     setSelectedSpeech(null)
   }
 
-  const renderItem = ({ item }) => <TurnipItem {...item} onSelectSpeech={() => setSelectedSpeech(item.id)} />
+  const renderItem = ({ item }) => <TurnipItem {...item} onSelectSpeech={() => setSelectedSpeech(item._id)} />
 
   if (!speeches) {
     return (

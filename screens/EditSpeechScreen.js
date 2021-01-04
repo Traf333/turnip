@@ -1,14 +1,14 @@
 import React, { useState, useLayoutEffect } from 'react'
+import { Ionicons } from '@expo/vector-icons'
+
 import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
   TextInput,
   TouchableHighlight,
-  Text,
 } from 'react-native'
 import { updateSpeech } from '../lib/api'
-import { Ionicons } from '@expo/vector-icons'
 
 const EditSpeechScreen = ({ route, navigation }) => {
   const { id, text } = route.params

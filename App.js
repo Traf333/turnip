@@ -22,7 +22,7 @@ const HomeStack = createStackNavigator()
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
-      <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen name="Home" component={HomeScreen} options={{ title: 'Репы' }} />
       <HomeStack.Screen
         name="TurnipScreen"
         component={TurnipScreen}
@@ -48,19 +48,13 @@ export default function App() {
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName
-
-            if (route.name === 'Home') {
-              iconName = focused
-                ? 'reader-outline'
-                : 'newspaper-outline'
-            } else if (route.name === 'Settings') {
-              iconName = focused ? 'options-outline' : 'ios-list'
+          tabBarIcon: ({ color, size }) => {
+            let icons = {
+              Home: 'newspaper-outline',
+              Settings: 'options-outline',
             }
 
-            // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />
+            return <Ionicons name={icons[route.name]} size={size} color={color} />
           },
         })}
         tabBarOptions={{

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, TouchableHighlight, Vibration, View } from 'react-native'
 import { Audio } from 'expo-av'
 import RecordAudio from './RecordAudio'
-import { downloadAudio, uploadAudio } from '../lib/fileStorage'
 import * as SpeechRepository from '../repositories/SpeechRepository'
+import { downloadAudio, uploadAudio } from '../lib/api'
 
 const TurnipItem = (props) => {
   const { _id, text, audio_url, onSelectSpeech, audio_uri } = props
