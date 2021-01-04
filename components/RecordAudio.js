@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { StyleSheet, TouchableHighlight, Vibration } from 'react-native'
 import { Audio } from 'expo-av'
-import { putAudio } from '../lib/api'
 
 const RecordAudio = ({ onRecord }) => {
   const [recording, setRecording] = useState()
