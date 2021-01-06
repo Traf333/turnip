@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity } from 'react-native'
 import { useStoreon } from 'storeon/react'
-import { fetchTurnips } from '../lib/api'
 import Loader from '../components/Loader'
 
 const Item = ({ title, onPress }) => (

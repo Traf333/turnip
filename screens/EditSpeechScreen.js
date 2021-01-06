@@ -14,10 +14,10 @@ const EditSpeechScreen = ({ route, navigation }) => {
   const [value, setValue] = useState(text)
   const { dispatch } = useStoreon()
 
-  const onSave = useCallback(() => {
+  const onSave = () => {
     dispatch('speeches/update', { _id, text: value })
     navigation.goBack()
-  }, text)
+  }
 
   useLayoutEffect(() => {
     navigation.setOptions({

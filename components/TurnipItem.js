@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { StyleSheet, Text, TouchableHighlight, Vibration, View } from 'react-native'
 import { Audio } from 'expo-av'
 import RecordAudio from './RecordAudio'
 import * as SpeechRepository from '../repositories/SpeechRepository'
-import { downloadAudio, uploadAudio } from '../lib/api'
+import { downloadAudio } from '../lib/api'
 
 const TurnipItem = (props) => {
   const { _id, text, audio_url, onSelectSpeech, audio_uri } = props
   const [uri, setUri] = useState(audio_uri)
   const [sound, setSound] = useState()
 
+  // todo: use with store
   const handlePress = async () => {
     try {
       if (uri) return await playSound(uri)
@@ -25,11 +26,9 @@ const TurnipItem = (props) => {
     }
   }
 
-  const handleRecord = async (uri) => {
-    await SpeechRepository.update(_id, { audio_uri: uri })
-    await uploadAudio(_id, uri)
+  const handleRecord = useCallback((uri) => {
     setUri(uri)
-  }
+  }, [])
 
   const handleSelect = () => {
     Vibration.vibrate(60)

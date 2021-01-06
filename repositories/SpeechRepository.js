@@ -36,6 +36,14 @@ export const update = async (id, params) => {
   }
 }
 
+export const remove = async (id) => {
+  try {
+    const record = await find(id)
+    return await speechesDB().remove(record)
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 export const addNew = async (params) => {
   try {
