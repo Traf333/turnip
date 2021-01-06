@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { useStoreon } from 'storeon/react'
 import {
   SafeAreaView,
   StatusBar,
@@ -10,23 +11,24 @@ import {
   TouchableHighlight,
 } from 'react-native'
 import TurnipItem from '../components/TurnipItem'
-import { deleteSpeech, fetchSpeeches } from '../lib/api'
+import { fetchSpeeches } from '../lib/api'
 import Modal from '../components/Modal'
+import Loader from '../components/Loader'
 
 
 const TurnipScreen = ({ route, navigation }) => {
-  const [speeches, setSpeeches] = useState()
+  const { dispatch, speeches } = useStoreon('speeches')
+
   const [selectedSpeech, setSelectedSpeech] = useState(null)
   const { id } = route.params
 
   useEffect(() => {
-    fetchSpeeches(id).then(data => setSpeeches(data))
+    dispatch('speeches/fetchAll', id)
   }, [])
 
   const handleOnDelete = async () => {
     try {
-      await deleteSpeech(selectedSpeech)
-      setSpeeches(speeches.filter(s => s._id !== selectedSpeech))
+      dispatch('speeches/remove', selectedSpeech)
       setSelectedSpeech(null)
     } catch (e) {
       console.log(e)
@@ -41,13 +43,7 @@ const TurnipScreen = ({ route, navigation }) => {
 
   const renderItem = ({ item }) => <TurnipItem {...item} onSelectSpeech={() => setSelectedSpeech(item._id)} />
 
-  if (!speeches) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading</Text>
-      </View>
-    )
-  }
+  if (!speeches) return <Loader />
   return (
     <SafeAreaView style={styles.container}>
 

@@ -4,7 +4,7 @@ const modelName = 'play'
 
 export const find = async (id) => {
   try {
-    return await playsDB.get(`${modelName}-${id}`)
+    return await playsDB().get(`${modelName}-${id}`)
   } catch (e) {
     console.log(`record with id: ${id}, not found`, e)
   }
@@ -13,7 +13,7 @@ export const find = async (id) => {
 export const all = async () => {
   console.log('fetching plays')
   try {
-    const result = await playsDB.allDocs({ include_docs: true })
+    const result = await playsDB().allDocs({ include_docs: true })
     return result.rows.map(row => row.doc)
   } catch (err) {
     console.log(err)
@@ -23,7 +23,7 @@ export const all = async () => {
 export const bulkCreate = async (params) => {
   console.log('bulk creating')
   try {
-    await playsDB.bulkDocs(params)
+    await playsDB().bulkDocs(params)
   } catch (err) {
     console.log(err)
   }
@@ -32,7 +32,7 @@ export const bulkCreate = async (params) => {
 
 export const addNew = async (params) => {
   try {
-    await playsDB.put(params)
+    await playsDB().put(params)
   } catch (err) {
     console.error(err)
   }
@@ -41,7 +41,7 @@ export const addNew = async (params) => {
 
 export const exists = async (id) => {
   try {
-    await playsDB.get(id)
+    await playsDB().get(id)
     return true
   } catch (err) {
     return false

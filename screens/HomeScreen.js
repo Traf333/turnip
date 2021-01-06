@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity } from 'react-native'
+import { useStoreon } from 'storeon/react'
 import { fetchTurnips } from '../lib/api'
+import Loader from '../components/Loader'
 
 const Item = ({ title, onPress }) => (
   <View style={[styles.item, styles.shadow]}>
@@ -11,14 +13,16 @@ const Item = ({ title, onPress }) => (
 )
 
 export default function App({ navigation }) {
-  const [turnips, setTurnips] = useState()
+  const { dispatch, turnips } = useStoreon('turnips')
 
   useEffect(() => {
-    fetchTurnips().then(data => setTurnips(data))
+    dispatch('turnips/fetchAll')
   }, [])
+
   const renderItem = ({ item }) => <Item title={item.title}
                                          onPress={() => navigation.navigate('TurnipScreen', item)} />
 
+  if (!turnips) return <Loader />
   return (
     <SafeAreaView style={styles.container}>
       <FlatList data={turnips} renderItem={renderItem} keyExtractor={item => item.id.toString()} />

@@ -1,6 +1,6 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useLayoutEffect, useCallback } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-
+import { useStoreon } from 'storeon/react'
 import {
   SafeAreaView,
   StatusBar,
@@ -8,16 +8,16 @@ import {
   TextInput,
   TouchableHighlight,
 } from 'react-native'
-import { updateSpeech } from '../lib/api'
 
 const EditSpeechScreen = ({ route, navigation }) => {
-  const { id, text } = route.params
+  const { _id, text } = route.params
   const [value, setValue] = useState(text)
+  const { dispatch } = useStoreon()
 
-  const onSave = async () => {
-    await updateSpeech(id, { text: value })
+  const onSave = useCallback(() => {
+    dispatch('speeches/update', { _id, text: value })
     navigation.goBack()
-  }
+  }, text)
 
   useLayoutEffect(() => {
     navigation.setOptions({
