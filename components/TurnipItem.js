@@ -4,11 +4,14 @@ import { Audio } from 'expo-av'
 import RecordAudio from './RecordAudio'
 import * as SpeechRepository from '../repositories/SpeechRepository'
 import { downloadAudio } from '../lib/api'
+import { useStoreon } from 'storeon/react'
 
 const TurnipItem = (props) => {
   const { _id, text, audio_url, onSelectSpeech, audio_uri } = props
   const [uri, setUri] = useState(audio_uri)
   const [sound, setSound] = useState()
+  const { dispatch } = useStoreon()
+
 
   // todo: use with store
   const handlePress = async () => {
@@ -27,6 +30,7 @@ const TurnipItem = (props) => {
   }
 
   const handleRecord = useCallback((uri) => {
+    dispatch('speeches/record', { _id, audio_uri: uri })
     setUri(uri)
   }, [])
 
