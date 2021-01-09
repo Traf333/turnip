@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useStoreon } from 'storeon/react'
 import {
@@ -13,6 +13,8 @@ import {
 import TurnipItem from '../components/TurnipItem'
 import Modal from '../components/Modal'
 import Loader from '../components/Loader'
+import * as SpeechRepository from '../repositories/SpeechRepository'
+import { Audio } from 'expo-av'
 
 
 const TurnipScreen = ({ route, navigation }) => {
@@ -20,6 +22,7 @@ const TurnipScreen = ({ route, navigation }) => {
   const { id } = route.params
 
   useEffect(() => {
+
     dispatch('speeches/fetchAll', id)
   }, [])
 
@@ -36,6 +39,22 @@ const TurnipScreen = ({ route, navigation }) => {
     navigation.navigate('EditSpeechScreen', speeches.find(i => i._id === selectedSpeechId))
     dispatch('speeches/deselectSpeech')
   }
+  const handleSync = async () => {
+    dispatch('speeches/set', undefined)
+    await SpeechRepository.reset()
+    dispatch('speeches/fetchAll', id)
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableHighlight onPress={handleSync} underlayColor={'#ddd'} style={{ padding: 10 }}>
+          <Ionicons name='sync-outline' size={26} />
+        </TouchableHighlight>
+      ),
+    })
+  }, [])
+
 
   const renderItem = ({ item }) => <TurnipItem {...item}
                                                onSelectSpeech={() => dispatch('speeches/selectSpeech', item._id)} />

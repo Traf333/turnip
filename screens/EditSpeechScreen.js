@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useCallback } from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useStoreon } from 'storeon/react'
 import {
