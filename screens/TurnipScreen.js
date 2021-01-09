@@ -13,9 +13,7 @@ import {
 import TurnipItem from '../components/TurnipItem'
 import Modal from '../components/Modal'
 import Loader from '../components/Loader'
-import * as SpeechRepository from '../repositories/SpeechRepository'
-import { Audio } from 'expo-av'
-
+import { resetDatabase } from '../lib/database'
 
 const TurnipScreen = ({ route, navigation }) => {
   const { dispatch, speeches, selectedSpeechId } = useStoreon('speeches', 'selectedSpeechId')
@@ -26,7 +24,6 @@ const TurnipScreen = ({ route, navigation }) => {
     dispatch('speeches/fetchAll', id)
   }, [])
 
-  console.log('selected speech id', selectedSpeechId)
   const handleOnDelete = useCallback(() => {
     try {
       dispatch('speeches/remove')
@@ -41,7 +38,7 @@ const TurnipScreen = ({ route, navigation }) => {
   }
   const handleSync = async () => {
     dispatch('speeches/set', undefined)
-    await SpeechRepository.reset()
+    await resetDatabase()
     dispatch('speeches/fetchAll', id)
   }
 

@@ -1,4 +1,4 @@
-import { resetData } from '../lib/api'
+import { resetDatabase } from '../lib/database'
 
 export function general(store) {
   store.on('@init', async () => ({ clearing: false }))
@@ -8,7 +8,7 @@ export function general(store) {
     console.log('remoteSettings')
     store.dispatch('general/set', true)
 
-    await resetData()
+    await resetDatabase()
 
     store.dispatch('general/set', false)
   })
