@@ -2,7 +2,7 @@ import { deleteSpeech, fetchSpeeches, updateSpeech, uploadAudio } from '../lib/a
 import * as SpeechRepository from '../repositories/SpeechRepository'
 
 export function speeches(store) {
-  store.on('@init', () => ({ speeches: undefined, selectedSpeechId: undefined }))
+  store.on('@init', () => ({ speeches: undefined, selectedSpeechId: undefined, selectedRole: undefined }))
   store.on('speeches/set', (_, speeches) => ({ speeches }))
 
   store.on('speeches/fetchAll', async (_, playId) => {
@@ -30,4 +30,5 @@ export function speeches(store) {
 
   store.on('speeches/selectSpeech', (_, selectedSpeechId) => ({ selectedSpeechId }))
   store.on('speeches/deselectSpeech', () => ({ selectedSpeechId: undefined }))
+  store.on('speeches/toggleRole', ({ selectedRole }, value) => ({ selectedRole: selectedRole === value ? undefined : value }))
 }

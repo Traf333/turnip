@@ -7,7 +7,7 @@ import { downloadAudio } from '../lib/api'
 import { useStoreon } from 'storeon/react'
 
 const TurnipItem = (props) => {
-  const { _id, text, audio_url, onSelectSpeech, audio_uri } = props
+  const { _id, text, audio_url, onSelectSpeech, audio_uri, highlighted } = props
   const [uri, setUri] = useState(audio_uri)
   const [sound, setSound] = useState()
   const { dispatch } = useStoreon()
@@ -65,9 +65,9 @@ const TurnipItem = (props) => {
           width: '80%',
         }}
       >
-        <Text style={styles.text}>{text}</Text>
+        <Text style={highlighted ? styles.text : styles.blurredText}>{text}</Text>
       </TouchableHighlight>
-      <RecordAudio onRecord={handleRecord} />
+      {highlighted && <RecordAudio onRecord={handleRecord} />}
     </View>
   )
 }
@@ -89,6 +89,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#DAEEB2',
   },
   text: {
+    fontSize: 16,
+  },
+  blurredText: {
+    opacity: 0.6,
     fontSize: 16,
   },
 })

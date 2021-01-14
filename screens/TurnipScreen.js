@@ -16,7 +16,12 @@ import Loader from '../components/Loader'
 import { resetDatabase } from '../lib/database'
 
 const TurnipScreen = ({ route, navigation }) => {
-  const { dispatch, speeches, selectedSpeechId } = useStoreon('speeches', 'selectedSpeechId')
+  const {
+    dispatch,
+    speeches,
+    selectedSpeechId,
+    selectedRole,
+  } = useStoreon('speeches', 'selectedSpeechId', 'selectedRole')
   const { id } = route.params
 
   useEffect(() => {
@@ -53,13 +58,28 @@ const TurnipScreen = ({ route, navigation }) => {
   }, [])
 
 
-  const renderItem = ({ item }) => <TurnipItem {...item}
-                                               onSelectSpeech={() => dispatch('speeches/selectSpeech', item._id)} />
-
+  const renderItem = ({ item }) => (
+    <TurnipItem
+      {...item}
+      highlighted={!selectedRole || item.text.startsWith(selectedRole)}
+      onSelectSpeech={() => dispatch('speeches/selectSpeech', item._id)}
+    />
+  )
   if (!speeches) return <Loader />
+  const roles = ['ОН.', 'ОНА.']
   return (
     <SafeAreaView style={styles.container}>
-
+      <View style={styles.selectorBar}>
+        {roles.map(role => (
+          <TouchableHighlight
+            key={role}
+            style={[styles.selector, role === selectedRole ? styles.selectedRole : undefined]}
+            onPress={() => dispatch('speeches/toggleRole', role)}
+          >
+            <Text>{role}</Text>
+          </TouchableHighlight>
+        ))}
+      </View>
       <FlatList
         data={speeches}
         keyExtractor={item => item._id}
@@ -110,6 +130,20 @@ const styles = StyleSheet.create({
   actionText: {
     fontSize: 16,
     paddingLeft: 20,
+  },
+  selectorBar: {
+    flexDirection: 'row',
+  },
+  selector: {
+    backgroundColor: '#ccc',
+    marginHorizontal: 10,
+    marginVertical: 5,
+    padding: 10,
+    flex: 1,
+    borderRadius: 10,
+  },
+  selectedRole: {
+    backgroundColor: '#bbec7f',
   },
 
 })
