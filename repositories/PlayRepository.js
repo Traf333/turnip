@@ -1,19 +1,13 @@
-import { playsDB } from '../lib/database'
+import { playsDB, speechesDB } from '../lib/database'
+import { find } from './SpeechRepository'
 
 const modelName = 'play'
-
-export const find = async (id) => {
-  try {
-    return await playsDB().get(`${modelName}-${id}`)
-  } catch (e) {
-    console.log(`record with id: ${id}, not found`, e)
-  }
-}
 
 export const all = async () => {
   console.log('fetching plays')
   try {
-    const result = await playsDB().allDocs({ include_docs: true })
+    const result = await playsDB.allDocs({ include_docs: true })
+    console.log('plays result', result)
     return result.rows.map(row => row.doc)
   } catch (err) {
     console.log(err)
@@ -23,43 +17,45 @@ export const all = async () => {
 export const bulkCreate = async (params) => {
   console.log('bulk creating')
   try {
-    await playsDB().bulkDocs(params)
+    await playsDB.bulkDocs(params)
   } catch (err) {
     console.log(err)
   }
 }
 
 
-export const addNew = async (params) => {
+export const update = async (id, params) => {
   try {
-    await playsDB().put(params)
+    const record = await find(id)
+    return await playsDB.put({ ...record, ...params })
   } catch (err) {
     console.error(err)
   }
 }
 
-
 export const exists = async (id) => {
   try {
-    await playsDB().get(id)
+    await playsDB.get(id)
     return true
   } catch (err) {
     return false
   }
 }
 
-export const addIfNew = async (params) => {
-  const ex = await exists(params._id)
-  if (!ex) {
-    await addNew(params)
+export const remove = async (id) => {
+  try {
+    const record = await find(id)
+    return await speechesDB.remove(record)
+  } catch (err) {
+    console.error(err)
   }
 }
 
+export const purge = async () => {
+  const records = await all()
+  records.forEach(r => remove(r._id))
+}
 
-// export const duplicate = async () => {
-//   try {
-//     let ret = await this.localDB2.replicate.from(this.localDB1);
-//   } catch (err) {
-//     console.log(JSON.stringify(err));
-//   }
-// }
+export default {
+  all, update, exists, bulkCreate, purge
+}

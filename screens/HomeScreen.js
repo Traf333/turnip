@@ -3,10 +3,11 @@ import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpa
 import { useStoreon } from 'storeon/react'
 import Loader from '../components/Loader'
 
-const Item = ({ title, onPress }) => (
+const Item = ({ title, onPress, outdated }) => (
   <View style={[styles.item, styles.shadow]}>
     <TouchableOpacity onPress={onPress}>
       <Text style={styles.title}>{title}</Text>
+      {outdated && <Text>Outdated</Text>}
     </TouchableOpacity>
   </View>
 )
@@ -18,8 +19,13 @@ export default function App({ navigation }) {
     dispatch('turnips/fetchAll')
   }, [])
 
-  const renderItem = ({ item }) => <Item title={item.title}
-                                         onPress={() => navigation.navigate('TurnipScreen', item)} />
+  const renderItem = ({ item }) => (
+    <Item
+      title={item.title}
+      onPress={() => navigation.navigate('TurnipScreen', item)}
+      outdated={item.updated_at !== item.sync_date}
+    />
+  )
 
   if (!turnips) return <Loader />
   return (

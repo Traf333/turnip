@@ -13,20 +13,37 @@ import {
 import TurnipItem from '../components/TurnipItem'
 import Modal from '../components/Modal'
 import Loader from '../components/Loader'
-import { resetDatabase } from '../lib/database'
+import { Audio } from 'expo-av'
+import { fetchSpeeches, fetchSpeechesFromServer } from '../lib/api'
+import PlayRepository from '../repositories/PlayRepository'
 
 const TurnipScreen = ({ route, navigation }) => {
+  const [speeches, setSpeeches] = useState()
+  const [turnip, setTurnip] = useState(route.params)
+  const [loading, setLoading] = useState(false)
   const {
     dispatch,
-    speeches,
     selectedSpeechId,
     selectedRole,
-  } = useStoreon('speeches', 'selectedSpeechId', 'selectedRole')
-  const { id } = route.params
+  } = useStoreon('selectedSpeechId', 'selectedRole')
+  const { id, roles = [], updated_at, sync_date } = turnip
+  const outdated = updated_at !== sync_date
+  const requestAudioRecordPermissions = async () => {
+    try {
+      await Audio.requestPermissionsAsync()
+      return await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      })
+    } catch (e) {
+      console.log(e, 'failure with request permissions')
+    }
+  }
 
   useEffect(() => {
-
-    dispatch('speeches/fetchAll', id)
+    fetchSpeeches(id).then(data => setSpeeches(data))
+    requestAudioRecordPermissions()
+      .then(() => console.log('accepted'))
   }, [])
 
   const handleOnDelete = useCallback(() => {
@@ -42,14 +59,16 @@ const TurnipScreen = ({ route, navigation }) => {
     dispatch('speeches/deselectSpeech')
   }
   const handleSync = async () => {
-    dispatch('speeches/set', undefined)
-    await resetDatabase()
-    dispatch('speeches/fetchAll', id)
+    // const updatedSpeeches = fetchSpeechesFromServer({ play_id: id, sync_date })
+    const data = {...turnip, sync_date: updated_at}
+    await PlayRepository.update(data)
+    setTurnip(data)
+
   }
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
+      headerRight: () => (outdated &&
         <TouchableHighlight onPress={handleSync} underlayColor={'#ddd'} style={{ padding: 10 }}>
           <Ionicons name='sync-outline' size={26} />
         </TouchableHighlight>
@@ -66,13 +85,13 @@ const TurnipScreen = ({ route, navigation }) => {
     />
   )
   if (!speeches) return <Loader />
-  const roles = ['ОН.', 'ОНА.']
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.selectorBar}>
         {roles.map(role => (
           <TouchableHighlight
             key={role}
+            underlayColor={'#ddd'}
             style={[styles.selector, role === selectedRole ? styles.selectedRole : undefined]}
             onPress={() => dispatch('speeches/toggleRole', role)}
           >
