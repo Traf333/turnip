@@ -7,7 +7,7 @@ import { downloadAudio } from '../lib/api'
 import { useStoreon } from 'storeon/react'
 
 const TurnipItem = (props) => {
-  const { _id, text, audio_url, onSelectSpeech, audio_uri, highlighted } = props
+  const { _id, text, audio_url, onSelectSpeech, audio_uri, highlighted, version = 0 } = props
   const [uri, setUri] = useState(audio_uri)
   const [sound, setSound] = useState()
   const { dispatch } = useStoreon()
