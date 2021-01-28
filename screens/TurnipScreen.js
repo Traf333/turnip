@@ -3,7 +3,6 @@ import { Ionicons } from '@expo/vector-icons'
 import { useStoreon } from 'storeon/react'
 import {
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -13,7 +12,6 @@ import {
 import TurnipItem from '../components/TurnipItem'
 import Modal from '../components/Modal'
 import Loader from '../components/Loader'
-import { resetDatabase } from '../lib/database'
 
 const TurnipScreen = ({ route, navigation }) => {
   const {
@@ -22,10 +20,9 @@ const TurnipScreen = ({ route, navigation }) => {
     selectedSpeechId,
     selectedRole,
   } = useStoreon('speeches', 'selectedSpeechId', 'selectedRole')
-  const { id } = route.params
+  const { id, roles } = route.params
 
   useEffect(() => {
-
     dispatch('speeches/fetchAll', id)
   }, [])
 
@@ -64,7 +61,6 @@ const TurnipScreen = ({ route, navigation }) => {
     />
   )
   if (!speeches) return <Loader />
-  const roles = ['ОН.', 'ОНА.']
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.selectorBar}>

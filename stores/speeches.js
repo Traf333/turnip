@@ -10,6 +10,11 @@ export function speeches(store) {
     store.dispatch('speeches/set', data)
   })
 
+  store.on('speeches/sync', async (_, playId) => {
+    const data = await fetchSpeeches(playId)
+    store.dispatch('speeches/set', data)
+  })
+
 
   store.on('speeches/remove', async ({ speeches, selectedSpeechId }) => {
     store.dispatch('speeches/set', speeches.filter(s => s._id !== selectedSpeechId))
