@@ -19,7 +19,7 @@ const TurnipItem = (props) => {
       if (uri) return await playSound(uri)
       if (audio_url) {
         const response = await downloadAudio(audio_url, _id)
-        await SpeechRepository.update(_id, { audio_uri: response.uri })
+        // await SpeechRepository.update(_id, { audio_uri: response.uri })
         setUri(response.uri)
         return await playSound(response.uri)
       }
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   blurredText: {
-    opacity: 0.6,
+    color: '#ccc',
     fontSize: 16,
   },
 })

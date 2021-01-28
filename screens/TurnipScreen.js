@@ -14,13 +14,12 @@ import TurnipItem from '../components/TurnipItem'
 import Modal from '../components/Modal'
 import Loader from '../components/Loader'
 import { Audio } from 'expo-av'
-import { fetchSpeeches, fetchSpeechesFromServer } from '../lib/api'
-import PlayRepository from '../repositories/PlayRepository'
+import { fetchSpeeches } from '../lib/fsapi'
+// import PlayRepository from '../repositories/PlayRepository'
 
 const TurnipScreen = ({ route, navigation }) => {
   const [speeches, setSpeeches] = useState()
   const [turnip, setTurnip] = useState(route.params)
-  const [loading, setLoading] = useState(false)
   const {
     dispatch,
     selectedSpeechId,
@@ -58,23 +57,23 @@ const TurnipScreen = ({ route, navigation }) => {
     navigation.navigate('EditSpeechScreen', speeches.find(i => i._id === selectedSpeechId))
     dispatch('speeches/deselectSpeech')
   }
-  const handleSync = async () => {
-    // const updatedSpeeches = fetchSpeechesFromServer({ play_id: id, sync_date })
-    const data = {...turnip, sync_date: updated_at}
-    await PlayRepository.update(data)
-    setTurnip(data)
-
-  }
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (outdated &&
-        <TouchableHighlight onPress={handleSync} underlayColor={'#ddd'} style={{ padding: 10 }}>
-          <Ionicons name='sync-outline' size={26} />
-        </TouchableHighlight>
-      ),
-    })
-  }, [])
+  // const handleSync = async () => {
+  //   // const updatedSpeeches = fetchSpeechesFromServer({ play_id: id, sync_date })
+  //   const data = {...turnip, sync_date: updated_at}
+  //   // await PlayRepository.update(data)
+  //   setTurnip(data)
+  //
+  // }
+  //
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => (outdated &&
+  //       <TouchableHighlight onPress={handleSync} underlayColor={'#ddd'} style={{ padding: 10 }}>
+  //         <Ionicons name='sync-outline' size={26} />
+  //       </TouchableHighlight>
+  //     ),
+  //   })
+  // }, [])
 
 
   const renderItem = ({ item }) => (
@@ -101,7 +100,7 @@ const TurnipScreen = ({ route, navigation }) => {
       </View>
       <FlatList
         data={speeches}
-        keyExtractor={item => item._id}
+        keyExtractor={item => item.id}
         renderItem={renderItem}
       />
       {selectedSpeechId &&

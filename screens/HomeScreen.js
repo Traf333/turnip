@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity } from 'react-native'
+import Auth from 'firebase/auth'
 import { useStoreon } from 'storeon/react'
 import Loader from '../components/Loader'
 
@@ -14,7 +15,7 @@ const Item = ({ title, onPress, outdated }) => (
 
 export default function App({ navigation }) {
   const { dispatch, turnips } = useStoreon('turnips')
-
+  Auth().
   useEffect(() => {
     dispatch('turnips/fetchAll')
   }, [])
