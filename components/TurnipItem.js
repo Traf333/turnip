@@ -55,11 +55,11 @@ const TurnipItem = (props) => {
   }, [sound])
 
   return (
-    <View style={[styles.item, uri || audio_url ? styles.recordedBg : styles.emptyBg]}>
+    <View style={[styles.item, uri || audio_url ? styles.recordedItem : styles.emptyItem]}>
       <TouchableHighlight
         onLongPress={handleSelect}
         onPress={handlePress}
-        underlayColor={'#ddd'}
+        underlayColor='#ddd'
         style={{
           padding: 10,
           width: '80%',
@@ -80,19 +80,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderLeftWidth: 4,
   },
-  emptyBg: {
-    backgroundColor: '#fff',
-
+  emptyItem: {
+    borderColor: '#fff',
   },
-  recordedBg: {
-    backgroundColor: '#DAEEB2',
+  recordedItem: {
+    borderColor: 'green'
   },
   text: {
     fontSize: 16,
+    color: "#222",
+
   },
   blurredText: {
-    opacity: 0.6,
+    color: "#999",
     fontSize: 16,
   },
 })

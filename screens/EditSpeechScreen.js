@@ -22,7 +22,7 @@ const EditSpeechScreen = ({ route, navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableHighlight onPress={onSave} underlayColor={'#ddd'} style={{padding: 10}}>
+        <TouchableHighlight onPress={onSave} underlayColor='#ddd' style={{padding: 10}}>
           <Ionicons name='checkmark-sharp' size={26} />
         </TouchableHighlight>
       ),

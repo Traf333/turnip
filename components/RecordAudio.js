@@ -48,7 +48,7 @@ const RecordAudio = ({ onRecord }) => {
     <TouchableHighlight
       onLongPress={handleLongPress}
       onPressOut={onPressOut}
-      underlayColor={'#ddd'}
+      underlayColor='#ddd'
       style={styles.recordAudio}
     >
       <Ionicons name='mic-outline' size={26} />
@@ -61,7 +61,7 @@ export default RecordAudio
 
 const styles = StyleSheet.create({
   recordAudio: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     paddingVertical: 10,
   },
 })

@@ -42,15 +42,13 @@ const TurnipScreen = ({ route, navigation }) => {
     dispatch('speeches/deselectSpeech')
   }
   const handleSync = async () => {
-    dispatch('speeches/set', undefined)
-    await resetDatabase()
-    dispatch('speeches/fetchAll', id)
+    dispatch('speeches/sync')
   }
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableHighlight onPress={handleSync} underlayColor={'#ddd'} style={{ padding: 10 }}>
+        <TouchableHighlight onPress={handleSync} underlayColor='#ddd' style={{ padding: 10 }}>
           <Ionicons name='sync-outline' size={26} />
         </TouchableHighlight>
       ),
@@ -73,6 +71,7 @@ const TurnipScreen = ({ route, navigation }) => {
         {roles.map(role => (
           <TouchableHighlight
             key={role}
+            underlayColor='#ddd'
             style={[styles.selector, role === selectedRole ? styles.selectedRole : undefined]}
             onPress={() => dispatch('speeches/toggleRole', role)}
           >
@@ -94,13 +93,13 @@ const TurnipScreen = ({ route, navigation }) => {
         transparent
       >
         <View>
-          <TouchableHighlight onPress={handleEdit} underlayColor={'#ddd'}>
+          <TouchableHighlight onPress={handleEdit} underlayColor='#ddd'>
             <View style={styles.actionItem}>
               <Ionicons name='pencil-sharp' size={26} />
               <Text style={styles.actionText}>Редактировать</Text>
             </View>
           </TouchableHighlight>
-          <TouchableHighlight onPress={handleOnDelete} underlayColor={'#ddd'}>
+          <TouchableHighlight onPress={handleOnDelete} underlayColor='#ddd'>
             <View style={styles.actionItem}>
               <Ionicons name='trash-outline' size={26} />
               <Text style={styles.actionText}>Удалить</Text>
@@ -119,7 +118,6 @@ export default TurnipScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
   },
   actionItem: {
     width: 200,
@@ -133,11 +131,12 @@ const styles = StyleSheet.create({
   },
   selectorBar: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   selector: {
     backgroundColor: '#ccc',
-    marginHorizontal: 10,
-    marginVertical: 5,
+    margin: 10,
     padding: 10,
     flex: 1,
     borderRadius: 10,
