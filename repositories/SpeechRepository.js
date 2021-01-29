@@ -8,10 +8,14 @@ export const find = async (id) => {
   }
 }
 
-export const all = async () => {
+export const all = async (play_id) => {
   try {
     const result = await speechesDB().allDocs({ include_docs: true })
-    return result.rows.map(row => row.doc)
+    let data = result.rows.map(row => row.doc)
+    if (play_id) {
+      data = data.filter(d => d.play_id === play_id)
+    }
+    return data
   } catch (err) {
     console.log(err)
   }

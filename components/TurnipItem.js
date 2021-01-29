@@ -12,8 +12,6 @@ const TurnipItem = (props) => {
   const [sound, setSound] = useState()
   const { dispatch } = useStoreon()
 
-
-  // todo: use with store
   const handlePress = async () => {
     try {
       if (uri) return await playSound(uri)
@@ -73,7 +71,6 @@ const TurnipItem = (props) => {
 }
 
 export default TurnipItem
-
 
 const styles = StyleSheet.create({
   item: {

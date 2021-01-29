@@ -2,7 +2,7 @@
   "expo": {
     "name": "Репы",
     "slug": "turnips",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "orientation": "portrait",
     "icon": "./assets/project-icon.png",
     "splash": {
@@ -18,12 +18,12 @@
     ],
     "ios": {
       "bundleIdentifier": "com.lookatonion.turnips",
-      "buildNumber": "1.0.1",
+      "buildNumber": "1.0.3",
       "supportsTablet": true
     },
     "android": {
       "package": "com.lookatonion.turnips",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/project-icon.png",
         "backgroundColor": "#FFFFFF"

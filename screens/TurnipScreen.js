@@ -14,12 +14,13 @@ import Modal from '../components/Modal'
 import Loader from '../components/Loader'
 
 const TurnipScreen = ({ route, navigation }) => {
+  const [selectedRole, setSelectedRole] = useState()
+  const [showModal, setShowModal] = useState(false)
+  const [selectedSpeechId, setSelectedSpeech] = useState()
   const {
     dispatch,
     speeches,
-    selectedSpeechId,
-    selectedRole,
-  } = useStoreon('speeches', 'selectedSpeechId', 'selectedRole')
+  } = useStoreon('speeches')
   const { id, roles } = route.params
 
   useEffect(() => {
@@ -29,6 +30,8 @@ const TurnipScreen = ({ route, navigation }) => {
   const handleOnDelete = useCallback(() => {
     try {
       dispatch('speeches/remove')
+      setSelectedSpeech(undefined)
+      setShowModal(false)
     } catch (e) {
       console.log(e)
       console.log('something went wrong with deletion')
@@ -36,10 +39,10 @@ const TurnipScreen = ({ route, navigation }) => {
   }, [])
   const handleEdit = () => {
     navigation.navigate('EditSpeechScreen', speeches.find(i => i._id === selectedSpeechId))
-    dispatch('speeches/deselectSpeech')
+    setShowModal(false)
   }
   const handleSync = async () => {
-    dispatch('speeches/sync')
+    dispatch('speeches/sync', id)
   }
 
   useLayoutEffect(() => {
@@ -52,15 +55,16 @@ const TurnipScreen = ({ route, navigation }) => {
     })
   }, [])
 
-
   const renderItem = ({ item }) => (
     <TurnipItem
       {...item}
       highlighted={!selectedRole || item.text.startsWith(selectedRole)}
-      onSelectSpeech={() => dispatch('speeches/selectSpeech', item._id)}
+      onSelectSpeech={() => setSelectedSpeech(item._id)}
     />
   )
+
   if (!speeches) return <Loader />
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.selectorBar}>
@@ -69,7 +73,7 @@ const TurnipScreen = ({ route, navigation }) => {
             key={role}
             underlayColor='#ddd'
             style={[styles.selector, role === selectedRole ? styles.selectedRole : undefined]}
-            onPress={() => dispatch('speeches/toggleRole', role)}
+            onPress={() => setSelectedRole(role === selectedRole ? undefined : role)}
           >
             <Text>{role}</Text>
           </TouchableHighlight>
@@ -80,12 +84,12 @@ const TurnipScreen = ({ route, navigation }) => {
         keyExtractor={item => item._id}
         renderItem={renderItem}
       />
-      {selectedSpeechId &&
+      {showModal &&
       <Modal
         visible
         onRequestClose={() => console.log('on request console.log()')}
         onDismiss={() => console.log('on dismiss')}
-        onPressOut={() => dispatch('speeches/deselectSpeech')}
+        onPressOut={() => setShowModal(false)}
         transparent
       >
         <View>
@@ -110,7 +114,6 @@ const TurnipScreen = ({ route, navigation }) => {
 
 export default TurnipScreen
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -128,7 +131,7 @@ const styles = StyleSheet.create({
   selectorBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   selector: {
     backgroundColor: '#ccc',
@@ -140,5 +143,4 @@ const styles = StyleSheet.create({
   selectedRole: {
     backgroundColor: '#bbec7f',
   },
-
 })
