@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react'
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity } from 'react-native'
+import { SafeAreaView, View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useStoreon } from 'storeon/react'
 import Loader from '../components/Loader'
+import { elevationShadowStyle } from '../lib/styles'
 
-const Item = ({ title, onPress }) => (
+const Item = ({ title, author, description, onPress }) => (
   <View style={[styles.item, styles.shadow]}>
     <TouchableOpacity onPress={onPress}>
-      <Text style={styles.title}>{title}</Text>
+      <View><Text style={styles.title}>{title}</Text></View>
+      {author && <View><Text style={styles.author}>{author}</Text></View>}
+      {description && <View><Text style={styles.description}>{description}</Text></View>}
     </TouchableOpacity>
   </View>
 )
@@ -18,7 +21,7 @@ export default function App({ navigation }) {
     dispatch('turnips/fetchAll')
   }, [])
 
-  const renderItem = ({ item }) => <Item title={item.title}
+  const renderItem = ({ item }) => <Item {...item}
                                          onPress={() => navigation.navigate('TurnipScreen', item)} />
 
   if (!turnips) return <Loader />
@@ -29,20 +32,10 @@ export default function App({ navigation }) {
   )
 }
 
-function elevationShadowStyle(elevation) {
-  return {
-    elevation,
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 0.5 * elevation },
-    shadowOpacity: 0.3,
-    shadowRadius: 0.8 * elevation,
-  }
-}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
   },
   shadow: elevationShadowStyle(5),
   item: {
@@ -53,5 +46,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
+  },
+  description: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: '#666'
+  },
+  author: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#666'
   },
 })

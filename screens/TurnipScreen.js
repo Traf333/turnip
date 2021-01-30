@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   FlatList,
   TouchableHighlight,
 } from 'react-native'
@@ -45,6 +46,11 @@ const TurnipScreen = ({ route, navigation }) => {
     dispatch('speeches/sync', id)
   }
 
+  const handleItemSelect = id => {
+    setSelectedSpeech(id)
+    setShowModal(true)
+  }
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -59,7 +65,7 @@ const TurnipScreen = ({ route, navigation }) => {
     <TurnipItem
       {...item}
       highlighted={!selectedRole || item.text.startsWith(selectedRole)}
-      onSelectSpeech={() => setSelectedSpeech(item._id)}
+      onSelectSpeech={() => handleItemSelect(item._id)}
     />
   )
 
@@ -67,7 +73,7 @@ const TurnipScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.selectorBar}>
+      <ScrollView contentContainerStyle={styles.selectorBar} horizontal>
         {roles.map(role => (
           <TouchableHighlight
             key={role}
@@ -78,7 +84,7 @@ const TurnipScreen = ({ route, navigation }) => {
             <Text>{role}</Text>
           </TouchableHighlight>
         ))}
-      </View>
+      </ScrollView>
       <FlatList
         data={speeches}
         keyExtractor={item => item._id}
@@ -137,7 +143,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     margin: 10,
     padding: 10,
-    flex: 1,
     borderRadius: 10,
   },
   selectedRole: {
