@@ -26,7 +26,7 @@ const TurnipScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     dispatch('speeches/fetchAll', id)
-  }, [])
+  }, [id])
 
   const handleOnDelete = useCallback(() => {
     try {
